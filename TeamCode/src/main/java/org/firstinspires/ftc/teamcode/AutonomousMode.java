@@ -44,7 +44,7 @@ public class AutonomousMode extends LinearOpMode {
     //private Servo clawYaxis;
     private Servo claw;
     private ColorSensor colorSensor;
-    private int sleeve;
+    //private int sleeve;
     public void openClaw() {
         //claw1.setPosition(claw1.getPosition() - 0.3701);
         claw.setPosition(0.6);
@@ -204,13 +204,13 @@ public class AutonomousMode extends LinearOpMode {
     public int scanSleeve() {
         int spot = 0;
         if(colorSensor.red() > colorSensor.blue() && colorSensor.red() > colorSensor.green()) {
-            return 1;
-        }
-        else if(colorSensor.blue() > colorSensor.red() && colorSensor.blue() > colorSensor.green()) {
             return 2;
         }
-        else {
+        else if(colorSensor.blue() > colorSensor.red() && colorSensor.blue() > colorSensor.green()) {
             return 3;
+        }
+        else {
+            return 1;
         }
     }
 
@@ -226,6 +226,22 @@ public class AutonomousMode extends LinearOpMode {
         } else if(s == 3){
             drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .forward(48)
+                    .build());
+        }
+    }
+
+    public void realPark(int s) {
+        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .forward(12)
+                .strafeRight(24)
+                .build());
+        if(s == 1){
+            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .strafeLeft(24)
+                    .build());
+        } else if(s == 3){
+            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .strafeRight(24)
                     .build());
         }
     }
@@ -298,9 +314,11 @@ public class AutonomousMode extends LinearOpMode {
 //            park(sleeve);
 //            stopDriving();
 //            //sleep(5000);
-            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .forward(28)
-                    .build());
+            int sleeve = scanSleeve();
+            realPark(sleeve);
+//            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+//                    .forward(28)
+//                    .build());
             break;
         }
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,6 +23,7 @@ public class DriverControlNonLinear extends OpMode {
     private DcMotor towerYaxis1;
     private DcMotor towerYaxis2;
     private Servo claw;
+    private ColorSensor colorSensor;
     //private Servo claw2;
     int debugTimes = 0;
     //@Override
@@ -36,6 +38,7 @@ public class DriverControlNonLinear extends OpMode {
         towerYaxis1 = hardwareMap.get(DcMotor.class, "towerYaxis1");
         towerYaxis2 = hardwareMap.get(DcMotor.class, "towerYaxis2");
         claw = hardwareMap.get(Servo.class, "claw");
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         towerYaxis1.setDirection(DcMotor.Direction.FORWARD);
         towerYaxis2.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -51,7 +54,7 @@ public class DriverControlNonLinear extends OpMode {
     }
        @Override
         public void loop() {
-
+            int sleeveNumber = 0;
             double drive = -gamepad1.left_stick_y/2;
             double strafe = gamepad1.left_stick_x/2;
             double turn = gamepad1.right_stick_x/2;
@@ -73,7 +76,18 @@ public class DriverControlNonLinear extends OpMode {
 //            towerYaxis2.setTargetPosition(0);
 
 
-
+           if(colorSensor.red() > colorSensor.blue() && colorSensor.red() > colorSensor.green()) {
+               telemetry.addData("color","red");
+               //return 2;
+           }
+           else if(colorSensor.blue() > colorSensor.red() && colorSensor.blue() > colorSensor.green()) {
+               telemetry.addData("color","blue");
+               //return 3;
+           }
+           else {
+               telemetry.addData("color","green");
+               //return 1;
+           }
 
             if(gamepad1.dpad_up){
                 towerYaxis1.setPower(-1); //FIX direction
@@ -148,19 +162,19 @@ public class DriverControlNonLinear extends OpMode {
 //            }
 
            if(gamepad1.right_bumper){ //closes
-               claw.setPosition(0.55);
+               claw.setPosition(0.48);
                //claw2.setPosition(claw2.getPosition() + 0.005);
            }
 
            if(gamepad1.left_bumper) {
-               claw.setPosition(1.0);
+               claw.setPosition(0.65);
                //claw2.setPosition(claw2.getPosition() - 0.005);
            }
 
 //           if(gamepad1.triangle) {
 //               claw.setPosition(0.5);
 //               //claw2.setPosition(claw2.getPosition() - 0.005);
-//           }
+//           }loo
 
 
             // Show the elapsed game time and wheel power.
@@ -170,6 +184,10 @@ public class DriverControlNonLinear extends OpMode {
             telemetry.addData("TowerYaxis1 Position", towerYaxis1.getCurrentPosition());
             telemetry.addData("TowerYaxis2 Position", towerYaxis2.getCurrentPosition());
             telemetry.addData("DebugTimes", debugTimes);
+            telemetry.addData("Color Sensor", sleeveNumber);
+            telemetry.addData("red", colorSensor.red());
+           telemetry.addData("blue", colorSensor.blue());
+           telemetry.addData("green", colorSensor.green());
             telemetry.update();
         }
 

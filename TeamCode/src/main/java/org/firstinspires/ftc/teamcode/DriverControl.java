@@ -70,6 +70,7 @@ public class DriverControl extends LinearOpMode {
 
 
 
+
             if(gamepad1.dpad_up){
                 towerYaxis1.setPower(-1); //FIX direction
                 towerYaxis2.setPower(1);
